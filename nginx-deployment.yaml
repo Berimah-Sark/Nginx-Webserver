@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-test-app
+  labels:
+    app: nginx-test
+spec:
+  replicas: 1 # Starten mit einem Pod
+  selector:
+    matchLabels:
+      app: nginx-test
+  template:
+    metadata:
+      labels:
+        app: nginx-test
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "100m" # 0.1 CPU-Kern
+            memory: "128Mi"
+          requests:
+            cpu: "50m" # 0.05 CPU-Kern
+            memory: "64Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-test-service
+spec:
+  selector:
+    app: nginx-test
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP # Interner Service, Minikube wird uns später einen externen Zugang geben

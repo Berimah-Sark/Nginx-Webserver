@@ -1,0 +1,19 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-test-hpa
+  namespace: default
+spec:
+    scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: nginx-test-app # Name deines Nginx-Deployments
+    minReplicas: 1
+    maxReplicas: 5 # Skaliere auf maximal 5 Pods
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50 # Skaliere hoch, wenn die CPU-Auslastung 50% der angeforderten CPU erreicht

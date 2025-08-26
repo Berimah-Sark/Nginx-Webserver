@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-persistent-service
+spec:
+  selector:
+    app: nginx-persistent
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP # Interner Service, Minikube wird uns später einen externen Zugang geben

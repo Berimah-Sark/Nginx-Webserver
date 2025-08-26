@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-persistent-app
+  labels:
+    app: nginx-persistent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-persistent
+  template:
+    metadata:
+      labels:
+        app: nginx-persistent
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-persistent-storage # Name des Volumes in diesem Pod
+          mountPath: /usr/share/nginx/html # Pfad im Container, wohin der Speicher gemountet wird
+      volumes:
+      - name: nginx-persistent-storage
+        persistentVolumeClaim:
+          claimName: nginx-data-pvc # Name deines PVCs

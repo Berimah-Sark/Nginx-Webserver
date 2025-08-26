@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    # Dies ist eine K3s/Traefik spezifische Annotation, die dem Ingress Controller sagt,
+    # dass er für diesen Ingress einen LoadBalancer (Typ Service) erstellen soll,
+    # der an eine externe IP gebunden werden kann (in K3s ist das die Node-IP).
+    ingress.kubernetes.io/ssl-redirect: "false" # Für HTTP, ohne HTTPS-Umleitung
+    nginx.ingress.kubernetes.io/rewrite-target: / # Nur falls du Pfade umschreiben willst, hier nicht zwingend notwendig
+spec:
+  rules:
+   - host: my-nginx.local # Definiere einen Hostnamen für deinen Service (kann auch weggelassen werden)
+     http:
+       paths:
+       - path: / # Alle Anfragen an den Root-Pfad
+         pathType: Prefix
+         backend:
+           service:
+             name: nginx-test-service # Name deines Nginx Service
+             port:
+               number: 80 # Port deines Nginx Service
+# Optional: Wenn du den Hostnamen nicht verwenden willst und direkt über die IP zugreifen möchtest
+   - http:
+       paths:
+       - path: /
+         pathType: Prefix
+         backend:
+           service:
+             name: nginx-test-service
+             port:
+               number: 80
